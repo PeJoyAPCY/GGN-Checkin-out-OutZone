@@ -210,17 +210,18 @@
     }
 
     function updatePreviewText() {
-      const job = getSelectedJob() || "-";
-      const extra = extraText.value.trim();
-      const name = fullname.value || "-";
-      const point = location.value || "-";
-      const nowStr = new Date().toLocaleString("th-TH");
+    const job = getSelectedJob() || "-";
+    const extra = extraText.value.trim();
+    const name = fullname.value || "-";
+    const point = location.value || "-";
+    const nowStr = new Date().toLocaleString("th-TH");
 
-      previewText.textContent =
-      `📅 ${nowStr}
-    📍 จุดปฏิบัติงาน: ${point}
-    👤 ผู้กรอก: ${name}
-    📌 งาน: ${job}${extra ? `\n📝 ${extra}` : ""}`;
+    previewText.innerHTML =
+        "📅 " + nowStr + "<br>" +
+        "📍 จุดปฏิบัติงาน: " + point + "<br>" +
+        "👤 ผู้กรอก: " + name + "<br>" +
+        "📌 งาน: " + job +
+        (extra ? "<br>📝 " + extra : "");
     }
 
     extraText.addEventListener("input", updatePreviewText);
@@ -296,6 +297,7 @@
       location.selectedIndex = 0;
       document.querySelectorAll('input[name="jobType"]').forEach(el => el.checked = false);
     }
+    updatePreviewText();
 
     document.getElementById("sendBtn").addEventListener("click", sendToTelegram);
   </script>
