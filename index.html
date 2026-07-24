@@ -188,14 +188,16 @@
     }
 
     imageInput.addEventListener("change", (e) => {
-      photos = Array.from(e.target.files).filter(file => {
+    photos = Array.from(e.target.files).filter(file => {
         if (file.type === "image/heic" || file.name.endsWith(".heic")) {
-          alert("ไม่รองรับไฟล์ .heic กรุณาใช้ .jpg หรือ .png");
-          return false;
+            alert("ไม่รองรับไฟล์ .heic กรุณาใช้ .jpg หรือ .png");
+            return false;
         }
         return true;
-      });
+    });
+
       updatePreview();
+      updatePreviewText();
     });
 
     function updatePreview() {
@@ -208,11 +210,11 @@
     }
 
     function updatePreviewText() {
-  const job = getSelectedJob() || "-";
-  const extra = extraText.value.trim();
-  const name = fullname.value || "-";
-  const point = location.value || "-";
-  const nowStr = new Date().toLocaleString("th-TH");
+      const job = getSelectedJob() || "-";
+      const extra = extraText.value.trim();
+      const name = fullname.value || "-";
+      const point = location.value || "-";
+      const nowStr = new Date().toLocaleString("th-TH");
 
       previewText.textContent =
       `📅 ${nowStr}
