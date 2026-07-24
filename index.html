@@ -141,7 +141,7 @@
     <label><input type="radio" name="jobType" value="Check out (ออกงาน)"> Check out (ออกงาน)</label>
   </div>
 
-  <select id="location">
+  <select id="locations">
     <option value="">เลือกจุดปฏิบัติงาน</option>
     <option value="สำนักงานลำพูน">สำนักงานลำพูน</option>
     <option value="สำนักงานลำปาง">สำนักงานลำปาง</option>
@@ -175,7 +175,7 @@
     const previewText = document.getElementById("previewText");
     const extraText = document.getElementById("text");
     const fullname = document.getElementById("fullname");
-    const location = document.getElementById("location");
+    const locations = document.getElementById("locations");
     const status = document.getElementById("status");
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -213,7 +213,7 @@
     const job = getSelectedJob() || "-";
     const extra = extraText.value.trim();
     const name = fullname.value || "-";
-    const point = location.value || "-";
+    const point = locations.value || "-";
     const nowStr = new Date().toLocaleString("th-TH");
 
     previewText.innerHTML =
@@ -226,7 +226,7 @@
 
     extraText.addEventListener("input", updatePreviewText);
     fullname.addEventListener("change", updatePreviewText);
-    location.addEventListener("change", updatePreviewText);
+    locations.addEventListener("change", updatePreviewText);
     document.querySelectorAll('input[name="jobType"]').forEach(el => {
     el.addEventListener("change", updatePreviewText);
     });
@@ -247,7 +247,7 @@
 
     async function sendToTelegram() {
       const name = fullname.value;
-      const point = location.value;
+      const point = locations.value;
       const job = getSelectedJob();
       const extraMsg = extraText.value.trim();
 
@@ -294,7 +294,7 @@
       previewText.textContent = "";
       extraText.value = "";
       fullname.selectedIndex = 0;
-      location.selectedIndex = 0;
+      locations.selectedIndex = 0;
       document.querySelectorAll('input[name="jobType"]').forEach(el => el.checked = false);
     }
     updatePreviewText();
