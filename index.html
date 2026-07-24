@@ -54,6 +54,16 @@
       margin-right: 5px;
     }
 
+    select {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
     input[type="file"],
     textarea,
     input[type="text"],
@@ -131,8 +141,23 @@
     <label><input type="radio" name="jobType" value="Check out (ออกงาน)"> Check out (ออกงาน)</label>
   </div>
 
-  <input type="text" id="fullname" placeholder="ชื่อ-นามสกุล (บังคับกรอก)" />
-  <textarea id="text" rows="2" placeholder="ข้อความเพิ่มเติม (ถ้ามี)"></textarea>
+  <select id="location">
+    <option value="">เลือกจุดปฏิบัติงาน</option>
+    <option value="สำนักงานลำพูน">สำนักงานลำพูน</option>
+    <option value="สำนักงานลำปาง">สำนักงานลำปาง</option>
+    <option value="สำนักงานกาญจนบุรี">สำนักงานกาญจนบุรี</option>
+  </select>
+
+  <select id="fullname">
+    <option value="">เลือกชื่อ-นามสกุล</option>
+    <option value="นายดนุพล ยามดีเลิศ">นายดนุพล ยามดีเลิศ</option>
+    <option value="นายดนุเดช จักวี">นายดนุเดช จักวี</option>
+    <option value="นายเจนณรงค์ คนเที่ยง">นายเจนณรงค์ คนเที่ยง</option>
+    <option value="นายจีระพันธ์ จันทร์แห่ว">นายจีระพันธ์ จันทร์แห่ว</option>
+    <option value="นายบุญพร้อม แตงทองคำ">นายบุญพร้อม แตงทองคำ</option>
+  </select>
+
+<textarea id="text" rows="2" placeholder="ข้อความเพิ่มเติม (ถ้ามี)"></textarea>
   <div id="previewText"></div>
   <input type="file" id="imageInput" accept="image/jpeg,image/png" multiple />
   <button id="sendBtn">ส่งภาพเข้า Telegram</button>
@@ -142,14 +167,15 @@
   <canvas id="canvas"></canvas>
 
   <script>
-    const botToken = "7553856757:AAEWZvVH-JLWOXeFCi-qt_ejs32jFlvW_gw";
-    const chatId = "-1002740662648";
+    const botToken = "8814549886:AAHw1ttG9ADD4KAsU93d_7CCPQeDjI6Pkrc";
+    const chatId = "-5357842423";
 
     const imageInput = document.getElementById("imageInput");
     const previewContainer = document.getElementById("previewContainer");
     const previewText = document.getElementById("previewText");
     const extraText = document.getElementById("text");
     const fullname = document.getElementById("fullname");
+    const location = document.getElementById("location");
     const status = document.getElementById("status");
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -182,18 +208,24 @@
     }
 
     function updatePreviewText() {
-      const job = getSelectedJob() || "-";
-      const extra = extraText.value.trim();
-      const name = fullname.value.trim() || "-";
-      const nowStr = new Date().toLocaleString("th-TH");
+  const job = getSelectedJob() || "-";
+  const extra = extraText.value.trim();
+  const name = fullname.value || "-";
+  const point = location.value || "-";
+  const nowStr = new Date().toLocaleString("th-TH");
+
       previewText.textContent =
-        `📅 ${nowStr}\n👤 ชื่อ: ${name}\n📌 งาน: ${job}${extra ? `\n📝 ${extra}` : ""}`;
+      `📅 ${nowStr}
+      📍 จุดปฏิบัติงาน: ${point}
+      👤 ผู้กรอก: ${name}
+      📌 งาน: ${job}${extra ? `\n📝 ${extra}` : ""}`;
     }
 
     extraText.addEventListener("input", updatePreviewText);
-    fullname.addEventListener("input", updatePreviewText);
+    fullname.addEventListener("change", updatePreviewText);
+    location.addEventListener("change", updatePreviewText);
     document.querySelectorAll('input[name="jobType"]').forEach(el => {
-      el.addEventListener("change", updatePreviewText);
+    el.addEventListener("change", updatePreviewText);
     });
 
     async function processImage(file) {
@@ -211,21 +243,20 @@
     }
 
     async function sendToTelegram() {
-      const name = fullname.value.trim();
+      const name = fullname.value;
+      const point = location.value;
       const job = getSelectedJob();
       const extraMsg = extraText.value.trim();
 
-      if (!name) {
-        alert("กรุณากรอกชื่อ-นามสกุล");
-        fullname.focus();
+     if (!point) {
+        alert("กรุณาเลือกจุดปฏิบัติงาน");
         return;
-      }
+    }
 
-      if (/\d/.test(name)) {
-        alert("ห้ามกรอกตัวเลขในชื่อ-นามสกุล");
-        fullname.focus();
+    if (!name) {
+        alert("กรุณาเลือกชื่อผู้กรอก");
         return;
-      }
+    }
 
       if (!job) {
         alert("กรุณาเลือกประเภทงาน");
@@ -258,7 +289,8 @@
       updatePreview();
       previewText.textContent = "";
       extraText.value = "";
-      fullname.value = "";
+      fullname.selectedIndex = 0;
+      location.selectedIndex = 0;
       document.querySelectorAll('input[name="jobType"]').forEach(el => el.checked = false);
     }
 
